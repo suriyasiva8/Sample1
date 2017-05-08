@@ -9,18 +9,22 @@
 
 	<import resource="context.xml" />
 
-
-	<bean id="lockTasklet" class="com.tasklet.FileDeletingTasklet" >
+ 
+	<bean id="read" class="com.tasklet.LockTasklets" >
+	
+	</bean> 
+	<bean id="write" class="com.tasklet.writer"></bean>
+	<bean id="lockTasklet" class="com.tasklet.LockTasklet" >
 	</bean>
 	
 	<job id="readJob" xmlns="http://www.springframework.org/schema/batch">
-		
-		<step id="deleteDir">
+	<step id="step"  next="deleteDir">
+        <tasklet>
+              <chunk reader="read" writer="write" commit-interval="1"/>
+        </tasklet> 
+    </step>
+	<step id="deleteDir">
 		    <tasklet ref="lockTasklet" />
-		</step>
+	</step>
 	</job>
-
-	
-
-
 </beans>
